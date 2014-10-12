@@ -1,0 +1,94 @@
+<?php
+$title = 'Categories';
+$this->headTitle($title);
+
+$this->bulkForm()->prepare();
+?>
+<!-- Add New Category Button Row -->
+<header class="row">
+    <div class="col-xs-6 col-sm-4 col-md-4 col-4">
+        <h3><?= $this->escapeHtml($this->translate($title)); ?></h3>
+    </div>
+    <div class="col-xs-0 col-sm-4 col-md-4 col-4">
+    </div>
+    <div class="col-xs-6 col-sm-4 col-md-4 col-4">
+        <p><a class="btn btn-success pull-right" href="<?= $this->url(
+            null, 
+            array(
+                'action'=>'create',
+            ),
+            true
+        )?>"><span class="glyphicon glyphicon-plus"></span>&nbsp;<span class="text"><?= $this->translate('Add Category') ?></span></a></p>
+    </div>
+</header><!-- ENDOF Add New Category Button Row-->
+
+<!-- Form action dropdown and submit Row -->
+<?= $this->form()->openTag($form) ?>
+<div class="row">
+    <div class="col-sm-8 col-md-8 col-lg-8">
+        <?= $this->renderElement($form->get('action-top')) ?>
+        <?= $this->renderElement($form->get('submit')) ?>
+    </div>
+    <div class="col-sm-4 col-md-4 col-lg-4">
+<!-- Page selector -->
+        <?= $this->paginator($paginator)->pull('right') ?>
+<!-- ENDOF Page selector -->
+    </div>
+</div><!-- ENDOF Form action dropdown and submit Row -->
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th><?= $this->bulkForm()->renderSelectAllCheckbox()?></th>
+        <th><?= $this->translate('Category')?></th>
+        <th><?= $this->translate('Lang')?></th>
+<?php if ($user->isAdmin()) : ?>
+        <th><?= $this->translate('Translated Id')?></th>
+<?php endif ?>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php $this->nonce()->setRouteName('blog_category_delete_route') ?>
+    <?php foreach($categories as $category) : ?>
+	    <tr>
+            <td><?= $this->bulkForm()->renderElementCheckbox($category['id']) ?></td>
+            <td style="padding-left:<?= ($category['lvl'] * 2) + 1?>em;"><?= $category['name'];?></td>
+	        <td><?= $this->translate($category['locale']) ?></td>
+<?php if ($user->isAdmin()) : ?>
+            <td><?= ((isset($category['translated_category_id']))? $category['translated_category_id'] : $this->translate('N/A')) ?></td>
+<?php endif ?>
+	        <td>
+                <?php if ($category['user_id'] === $this->identity()->getId()) : ?>
+                <a href="<?= $this->url(null, array('action'=>'edit', 'id' => $category['id'], 'lang' => $category['locale']), true); ?>"><?= $this->translate('Edit') ?></a>
+                <?php endif ?>
+	        </td>
+	        <td>
+                <?php if ($category['user_id'] === $this->identity()->getId()) : ?>
+                <a class="glyphicon glyphicon-trash" role="button" title="<?= $this->translate('Delete') ?>" href="<?= $this->url($this->nonce()->getRouteName(), array(
+                    'lang' => $this->lang(), 
+                    'id' => $category['id'],
+                    'nonce' => $this->nonce()->getHash($category['id']),
+                )); ?>" onclick="return confirm('<?= $this->translate('Are you sure?') ?>')"></a>
+                <?php endif ?>
+	        </td>
+	    </tr>
+    <?php endforeach; ?>
+    <?php if (empty($categories)) : ?>
+	    <tr>
+            <td><?= $this->translate('You have not added any category for the moment...')?></td>
+	    </tr>
+    <?php endif ?>
+</table>
+<div class="row listing">
+    <div class="col-sm-8 col-md-8 col-lg-8">
+        <?= $this->renderElement($form->get('action-bottom')) ?>
+        <?= $this->renderElement($form->get('submit')) ?>
+    </div>
+    <div class="col-sm-4 col-md-4 col-lg-4">
+<!-- Page selector -->
+        <?= $this->paginator($paginator)->pull('right') ?>
+<!-- ENDOF Page selector -->
+    </div>
+</div><!-- ENDOF Form action dropdown and submit Row -->
+<?= $this->form()->closeTag();?>
+
+<?php include $this->bulkForm()->getPartialScriptPath() ?>

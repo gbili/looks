@@ -1,0 +1,81 @@
+<?php
+$title = 'Posts';
+$this->headTitle($title);
+$masonryColumnWidth = 180;
+$this->bulkForm()->prepare();
+?>
+<?php $this->nonce()->setRouteName('blog_post_delete_route') ?>
+
+<header class="row">
+    <div class="col-xs-6 col-sm-4 col-md-4 col-4">
+        <h3><?php echo $this->escapeHtml($this->translate($title)); ?></h3>
+    </div>
+    <div class="col-xs-0 col-sm-4 col-md-4 col-4">
+    </div>
+    <div class="col-xs-6 col-sm-4 col-md-4 col-4">
+        <p><a class="btn btn-success pull-right" href="<?php echo $this->url(null, array(
+            'lang' => $this->lang(),
+            'action'=>'create',
+        ), true);?>" title="<?= $this->translate('New Post')?>"><span class="glyphicon glyphicon-pencil"></span> <span class="text"><?= $this->translate('Write Post')?></span></a></p>
+    </div>
+</header>
+<?php if (!empty($posts)) : ?>
+    <?php echo $this->form()->openTag($form) ?>
+    <div class="row">
+        <div class="col-sm-8 col-md-8 col-lg-8">
+            <?= $this->renderElement($form->get('action-top')) ?>
+            <?= $this->renderElement($form->get('submit')) ?>
+        </div>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+        </div>
+    </div>
+    <?= $this->bulkForm()->renderSelectAllCheckbox()?>
+<div class="brick-wall row">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <ul class="please_masonize_<?= $masonryColumnWidth ?>">
+            <?php foreach($posts as $post) : ?>
+            <?php
+                $media = $post->getMedia();
+            ?>
+            <li>
+                <div>
+                    <p><?= $this->bulkForm()->renderElementCheckbox($post->getId()) ?>&nbsp;<span><?= $this->escapeHtml($post->getId())?></span>&nbsp;<span><?= $this->escapeHtml($post->getLocale())?></span>&nbsp;<?= $this->escapeHtml($this->translate(ucfirst($post->getCategoryslug())))?></p>
+                    <img src="<?php echo $media->getSrc()?>" class="img-rounded img-responsive" alt="<?= $this->translate('Post Picture') ?>"/>
+                    <div class="caption">
+                        <h4><?= $this->escapeHtml($post->getData()->getTitle()) ?></h4>
+                        <p><?= $this->escapeHtml($post->getSlug())?><?php // $this->escapeHtml($post->getUniqueslug())?></p>
+                        <p>
+                            <a class="glyphicon glyphicon-pencil" role="button" href="<?= $this->url(null , array(
+                                'lang' => $post->getLocale(),
+                                'action' => 'edit', 
+                                'id' => $post->getId(),
+                            )) ?>" title="<?= $this->translate('Edit') ?>"></a>
+                            <a class="glyphicon glyphicon-trash" role="button" title="<?= $this->translate('Delete') ?>" href="<?= $this->url($this->nonce()->getRouteName(), array(
+                                'lang' => $this->lang(), 
+                                'id' => $post->getId(),
+                                'nonce' => $this->nonce()->getHash($post->getId()),
+                            )) ?>" onclick="return confirm('<?= $this->translate('Are you sure?') ?>')"></a>
+                        </p>
+                    </div><!-- end caption -->
+                </div><!-- end thumbnail -->
+            </li>
+        <?php endforeach ?>
+        </ul>
+    <?php require_once __DIR__ . '/../../partial/init_masonry.js.phtml' ?> 
+    </div>
+</div>
+
+    <div class="row">
+        <div class="col-sm-8 col-md-8 col-lg-8">
+        <?php echo $this->renderElement($form->get('action-bottom')) ?>
+        <?php echo $this->renderElement($form->get('submit')) ?>
+        </div>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+        </div>
+    </div>
+    <?php echo $this->form()->closeTag();?>
+<?php else : ?>
+    <p><?= $this->translate('You have not written any posts for the moment...')?></p>
+<?php endif ?>
+
+<?php include $this->bulkForm()->getPartialScriptPath() ?>

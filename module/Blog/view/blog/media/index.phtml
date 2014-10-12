@@ -1,0 +1,53 @@
+<?php
+$title = 'Media Library';
+$this->headTitle($title);
+$this->notify(((isset($messages))? $messages : array()));
+?>
+<header class="row">
+    <div class="col-xs-8 col-sm-8 col-md-8 col-8">
+        <h3><?= $this->escapeHtml($this->translate($title)); ?></h3>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-4">
+    <p><a class="btn btn-success pull-right" title="<?= $this->translate('Upload media') ?>" href="<?= $this->url(null, array('action'=>'upload'), true) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;<span class="text"><?= $this->translate('Upload media') ?></span></a></p>
+    </div>
+</header>
+
+<?php $this->nonce()->setRouteName('blog_media_delete_route') ?>
+
+<?php $masonryColumnWidth = 180 ?>
+
+<div class="brick-wall row">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <ul class="please_masonize_<?= $masonryColumnWidth ?>">
+            <?php foreach($medias as $media) : ?>
+                <li>
+                    <a href="<?= $this->url('blog_media_view', array('slug' => $media->getSlug()), true) ?>"><img class="img-responsive" src="<?= $this->escapeHtml($media->getFile()->getSrc());?>"></a>
+                    <div class="caption">
+                    <h5><?= $this->escapeHtml($media->getSlug());?></h5>
+                    <p>
+                        <a class="glyphicon glyphicon-link" role="button" title="<?= $this->translate('Link to') ?>" href="<?= $this->url(null, array(
+                            'lang' => $this->lang(), 
+                            'action' => 'link', 
+                            'id' => $media->getId(),
+                        )); ?>"></a>
+                        <a class="glyphicon glyphicon-edit" role="button" title="<?= $this->translate('Edit') ?>"  href="<?= $this->url(null, array(
+                            'lang' => $this->lang(), 
+                            'action' => 'edit', 
+                            'id' => $media->getId(),
+                        )); ?>"></a>
+                        <a class="glyphicon glyphicon-trash" role="button" title="<?= $this->translate('Delete') ?>" href="<?= $this->url($this->nonce()->getRouteName(), array(
+                            'lang' => $this->lang(), 
+                            'id' => $media->getId(),
+                            'nonce' => $this->nonce()->getHash($media->getId()),
+                        )); ?>" onclick="return confirm('<?= $this->translate('Are you sure?') ?>')"></a>
+                    </p>
+                 </div><!-- end caption -->
+               </li><!-- end thumbnail -->
+            <?php endforeach ?>
+        </ul><!--masonize -->
+    </div><!-- end col -->
+ </div><!-- end row -->
+<?php if (empty($medias)) : ?>
+    <p><?= $this->translate('No medias have been uploaded') ?></p>
+<?php endif ?>
+<?php require_once __DIR__ . '/../../partial/init_masonry.js.phtml' ?> 

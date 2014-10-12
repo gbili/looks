@@ -1,0 +1,89 @@
+<?php
+$title = 'Files Library';
+$this->headTitle($title);
+
+$this->bulkForm()->prepare();
+?>
+<?php $this->nonce()->setRouteName('blog_file_delete_route') ?>
+
+<header class="row">
+    <div class="col-xs-8 col-sm-8 col-md-8 col-8">
+        <h3><?= $this->escapeHtml($this->translate($title)); ?></h3>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-4">
+        <p><a class="btn btn-success pull-right" title="<?= $this->translate('Upload file') ?>" href="<?= $this->url(null, array('controller' => 'blog_file_controller', 'action'=>'upload'), true) ?>"><span class="glyphicon glyphicon-upload"></span>&nbsp;<span class="text"><?= $this->translate('Upload file') ?></span></a></p>
+    </div>
+</header>
+<?= $this->form()->openTag($form) ?>
+<div class="row">
+    <div class="col-sm-8 col-md-8 col-lg-8">
+        <?= $this->renderElement($form->get('action-top')) ?>
+        <?= $this->renderElement($form->get('submit')) ?>
+    </div>
+    <div class="col-sm-4 col-md-4 col-lg-4">
+<!-- Page selector -->
+<!--    <?php //echo $this->paginator($paginator) ?> -->
+<!-- ENDOF Page selector -->
+    </div>
+</div><!-- ENDOF Form action dropdown and submit Row -->
+<table class="table table-bordered table-hover">
+    <tr>
+        <th><?= $this->bulkForm()->renderSelectAllCheckbox()?></th>
+        <th><?= $this->translate('Name')?></th>
+        <th><?= $this->translate('Dirpath')?></th>
+        <th><?= $this->translate('Basename')?></th>
+        <th><?= $this->translate('Type')?></th>
+        <th><?= $this->translate('Size')?></th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php foreach($files as $file) : ?>
+	    <tr>
+            <td><?= $this->bulkForm()->renderElementCheckbox($file->getId()) ?></td>
+	        <td><?= $this->escapeHtml($file->getName());?></td>
+	        <td><?= $this->escapeHtml($file->getDirpath());?></td>
+	        <td><?= $this->escapeHtml($file->getBasename());?></td>
+	        <td><?= $this->escapeHtml($file->getType());?></td>
+	        <td><?= $this->escapeHtml($file->getSize());?></td>
+	        <td>
+                <a href="<?= $this->url(null, array(
+                    'lang' => $this->lang(),
+                    'controller' => 'blog_media_controller', 
+                    'action' => 'create',
+                    'id' => $file->getId()
+                )); ?>"><?= $this->translate('Link')?></a>
+	        </td>
+	        <td>
+                <a href="<?= $this->url(null, array(
+                    'lang' => $this->lang(),
+                    'controller' => 'blog_file_controller', 
+                    'action' => 'edit', 
+                    'id' => $file->getId(),
+                )); ?>"><?= $this->translate('Edit')?></a>
+
+	        </td>
+	        <td>
+                <a class="glyphicon glyphicon-trash" role="button" title="<?= $this->translate('Delete') ?>" href="<?= $this->url($this->nonce()->getRouteName(), array(
+                    'lang' => $this->lang(), 
+                    'id' => $file->getId(),
+                    'nonce' => $this->nonce()->getHash($file->getId()),
+                )); ?>" onclick="return confirm('<?= $this->translate('Are you sure?') ?>')"></a>
+	        </td>
+	    </tr>
+    <?php endforeach; ?>
+</table>
+<div class="row">
+    <div class="col-sm-8 col-md-8 col-lg-8">
+        <?= $this->renderElement($form->get('action-bottom')) ?>
+        <?= $this->renderElement($form->get('submit')) ?>
+    </div>
+    <div class="col-sm-4 col-md-4 col-lg-4">
+<!-- Page selector -->
+<!--    <?php //echo $this->paginator($paginator) ?> -->
+<!-- ENDOF Page selector -->
+    </div>
+</div><!-- ENDOF Form action dropdown and submit Row -->
+<?= $this->form()->closeTag() ?>
+
+<?php include $this->bulkForm()->getPartialScriptPath() ?>

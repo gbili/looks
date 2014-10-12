@@ -1,0 +1,54 @@
+<?php
+$this->notify(isset($messages)? $messages : array());
+$title = 'My Pack';
+$this->headTitle($title);
+?>
+<header class="row">
+    <div class="col-xs-8 col-sm-4 col-md-4 col-4">
+        <h3><?= $this->escapeHtml($this->translate($title)); ?></h3>
+    </div>
+    <div class="col-xs-0 col-sm-4 col-md-4 col-4">
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4 col-4">
+        <p><a class="btn btn-success pull-right" href="<?= $this->url('dogtore_dog_add_route', array(), true);?>"><span class="glyphicon glyphicon-plus"></span>&nbsp;<span class="text"><?= $this->translate('Add Dog') ?></span></a></p>
+    </div>
+</header>
+
+<?php $this->nonce()->setRouteName('dogtore_dog_noncedelete_route') ?>
+<?php $masonryColumnWidth = 180 ?>
+<?php if (empty($dogs)) : ?>
+    <p><?= $this->translate('You have no dogs in your pack') ?></p>
+<?php return ?>
+<?php endif ?>
+
+<div class="brick-wall row">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <ul class="please_masonize_<?= $masonryColumnWidth ?>">
+        <?php foreach($dogs as $dog) : ?>
+            <li>
+                <div class="<?= (('f' === $dog['dog_gender'])? 'female': 'male') ?>">
+                  <img class="img-rounded img-responsive" src="<?= $dog['media_src']?>" alt="<?= $dog['media_alt']?>"/>
+                  <div class="caption">
+                  <h4><?= $dog['dog_name'] ?></h4>
+                    <p>
+                        <a class="glyphicon glyphicon-eye-open" role="button" href="<?= $this->url('dog_view_my_dog', array(
+                            'uniquename' => $dog['user_uniquename'],
+                            'dogname_underscored' => $this->string()->spaceToUnderscore($dog['dog_name']),
+                        ), true); ?>" title="<?= $this->translate('View') ?>"></a>
+                        <a class="glyphicon glyphicon-edit" role="button" href="<?= $this->url('dog_user_dog_edit', array(
+                            'dogname_underscored' => $this->string()->spaceToUnderscore($dog['dog_name']),
+                        ), true); ?>" title="<?= $this->translate('View') ?>"></a>
+                        <a class="glyphicon glyphicon-trash" role="button" title="<?= $this->translate('Delete') ?>" href="<?= $this->url($this->nonce()->getRouteName(), array(
+                            'lang' => $this->lang(), 
+                            'id' => $dog['dog_id'],
+                            'nonce' => $this->nonce()->getHash($dog['dog_id']),
+                        )); ?>" onclick="return confirm('<?= $this->translate('Are you sure?') ?>')"></a>
+                    </p>
+                 </div><!-- end caption -->
+               </div><!-- end thumbnail -->
+            </li>
+        <?php endforeach ?>
+        </ul>
+    <?php require_once __DIR__ . '/../../../../Blog/view/partial/init_masonry.js.phtml' ?> 
+    </div>
+</div>
