@@ -120,7 +120,7 @@ class Post implements \GbiliUserModule\IsOwnedByInterface
 
     public function isOwnedBy(\GbiliUserModule\Entity\UserInterface $user)
     {
-        return $this->user->getUser() === $user;
+        return $this->user->getId() === $user->getId();
     }
 
     public function setSlug($slug)

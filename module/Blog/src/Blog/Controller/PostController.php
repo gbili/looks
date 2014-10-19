@@ -237,9 +237,10 @@ class PostController extends \Zend\Mvc\Controller\AbstractActionController
         $em = $this->em();
 
         $postData = $post->getData();
-        $postData->removePost($post);
 
-        if (!$postData->hasPosts()) {
+        $otherPostsWithSamePostData = $this->repository($post)->findBy(array('data' => $postData));
+
+        if (empty($otherPostsWithSamePostData)) {
             $em->remove($postData);
         }
 

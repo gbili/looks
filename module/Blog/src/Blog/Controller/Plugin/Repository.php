@@ -90,6 +90,9 @@ class Repository extends \Zend\Mvc\Controller\Plugin\AbstractPlugin
 
     public function getRepository($entityClass)
     {
+        if (is_object($entityClass)) {
+            $entityClass = get_class($entityClass);
+        }
         $repository = $this->controller->em()->getRepository($entityClass);
         return $this->prepareRepository($repository);
     }

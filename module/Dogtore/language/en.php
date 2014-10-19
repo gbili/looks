@@ -313,4 +313,9 @@ return array (
   'Gbili-squared-divcool-5.jpg' => '',
   'Gbili-squared-divcool-4.jpg' => '',
   'Gbili-squared-divcool-25x25-2.jpg' => '',
+  'unethicalhacks129.jpg' => '',
+  'flusswellenforum2014-52.JPG' => '',
+  '6086519585_59a875090b_b-2.jpg' => '',
+  'Edit Post' => '',
+  'Deletion succeed' => '',
 );

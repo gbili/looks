@@ -10,7 +10,9 @@ implements \Zend\InputFilter\InputFilterProviderInterface
 
         $objectManager = $sm->get('Doctrine\ORM\EntityManager');
 
-        $this->setHydrator(new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($objectManager))
+        $hydrator = new \DoctrineModule\Stdlib\Hydrator\DoctrineObject($objectManager);
+        $hydrator->addStrategy('parent', new \Blog\HydratorStrategy\PostParentStrategy());
+        $this->setHydrator($hydrator)
              ->setObject(new \Blog\Entity\Post());
         
         $this->add(array(
